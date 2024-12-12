@@ -1,0 +1,32 @@
+{
+  "name": "localstorage-expiry",
+  "version": "1.0.0",
+  "description": "A lightweight, secure, and browser-compatible utility for managing localStorage with expiry functionality. This package allows you to store, retrieve, and automatically expire data in the browser's `localStorage`.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "keywords": [
+    "localstorage",
+    "expiry",
+    "javascript",
+    "typescript"
+  ],
+  "author": "Habib Adebayo",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.2",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/habib-0007/localstorage-expiry.git"
+  }
+}
