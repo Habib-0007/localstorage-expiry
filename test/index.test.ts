@@ -18,7 +18,7 @@ describe('LocalStorageExpiry', () => {
       }),
     };
   })();
-  
+
   // Replace global localStorage with mock
   Object.defineProperty(window, 'localStorage', {
     value: localStorageMock,
@@ -32,9 +32,11 @@ describe('LocalStorageExpiry', () => {
   describe('set method', () => {
     it('should store data in localStorage', () => {
       LocalStorageExpiry.set('testKey', 'testValue');
-      
+
       expect(localStorageMock.setItem).toHaveBeenCalledTimes(1);
-      const parsedItem = JSON.parse(localStorageMock.getItem('testKey') as string);
+      const parsedItem = JSON.parse(
+        localStorageMock.getItem('testKey') as string
+      );
       expect(parsedItem.value).toBe('testValue');
       expect(parsedItem.expiry).toBeNull();
     });
@@ -42,10 +44,12 @@ describe('LocalStorageExpiry', () => {
     it('should store data with expiry when ttl provided', () => {
       const now = new Date('2023-01-01T00:00:00Z').getTime();
       vi.setSystemTime(now);
-      
+
       LocalStorageExpiry.set('testKey', 'testValue', 60000); // 1 minute expiry
-      
-      const parsedItem = JSON.parse(localStorageMock.getItem('testKey') as string);
+
+      const parsedItem = JSON.parse(
+        localStorageMock.getItem('testKey') as string
+      );
       expect(parsedItem.value).toBe('testValue');
       expect(parsedItem.expiry).toBe(now + 60000);
     });
@@ -59,28 +63,28 @@ describe('LocalStorageExpiry', () => {
     it('should return the stored value for non-expired items', () => {
       const now = new Date('2023-01-01T00:00:00Z').getTime();
       vi.setSystemTime(now);
-      
+
       LocalStorageExpiry.set('testKey', 'testValue', 60000); // 1 minute expiry
-      
+
       expect(LocalStorageExpiry.get('testKey')).toBe('testValue');
     });
 
     it('should return null and remove expired items', () => {
       const now = new Date('2023-01-01T00:00:00Z').getTime();
       vi.setSystemTime(now);
-      
+
       LocalStorageExpiry.set('testKey', 'testValue', 60000); // 1 minute expiry
-      
+
       // Advance time past expiry
       vi.setSystemTime(now + 61000);
-      
+
       expect(LocalStorageExpiry.get('testKey')).toBeNull();
       expect(localStorageMock.removeItem).toHaveBeenCalledWith('testKey');
     });
 
     it('should handle malformed JSON data gracefully', () => {
       localStorageMock.setItem('malformedKey', 'not valid json');
-      
+
       expect(LocalStorageExpiry.get('malformedKey')).toBeNull();
       expect(localStorageMock.removeItem).toHaveBeenCalledWith('malformedKey');
     });
@@ -90,7 +94,7 @@ describe('LocalStorageExpiry', () => {
     it('should remove item from localStorage', () => {
       LocalStorageExpiry.set('testKey', 'testValue');
       LocalStorageExpiry.remove('testKey');
-      
+
       expect(localStorageMock.removeItem).toHaveBeenCalledWith('testKey');
     });
   });
@@ -100,7 +104,7 @@ describe('LocalStorageExpiry', () => {
       LocalStorageExpiry.set('testKey1', 'testValue1');
       LocalStorageExpiry.set('testKey2', 'testValue2');
       LocalStorageExpiry.clear();
-      
+
       expect(localStorageMock.clear).toHaveBeenCalledTimes(1);
     });
   });
@@ -108,19 +112,19 @@ describe('LocalStorageExpiry', () => {
   describe('exists method', () => {
     it('should return true for valid, non-expired keys', () => {
       LocalStorageExpiry.set('testKey', 'testValue');
-      
+
       expect(LocalStorageExpiry.exists('testKey')).toBe(true);
     });
 
     it('should return false for expired keys', () => {
       const now = new Date('2023-01-01T00:00:00Z').getTime();
       vi.setSystemTime(now);
-      
+
       LocalStorageExpiry.set('testKey', 'testValue', 60000);
-      
+
       // Advance time past expiry
       vi.setSystemTime(now + 61000);
-      
+
       expect(LocalStorageExpiry.exists('testKey')).toBe(false);
     });
 
@@ -136,31 +140,31 @@ describe('LocalStorageExpiry', () => {
 
     it('should return null for items without expiry', () => {
       LocalStorageExpiry.set('testKey', 'testValue');
-      
+
       expect(LocalStorageExpiry.getTimeRemaining('testKey')).toBeNull();
     });
 
     it('should return remaining time for non-expired items', () => {
       const now = new Date('2023-01-01T00:00:00Z').getTime();
       vi.setSystemTime(now);
-      
+
       LocalStorageExpiry.set('testKey', 'testValue', 60000); // 1 minute expiry
-      
+
       // Advance time by 30 seconds
       vi.setSystemTime(now + 30000);
-      
+
       expect(LocalStorageExpiry.getTimeRemaining('testKey')).toBe(30000);
     });
 
     it('should return 0 for expired items', () => {
       const now = new Date('2023-01-01T00:00:00Z').getTime();
       vi.setSystemTime(now);
-      
+
       LocalStorageExpiry.set('testKey', 'testValue', 60000); // 1 minute expiry
-      
+
       // Advance time past expiry
       vi.setSystemTime(now + 70000);
-      
+
       expect(LocalStorageExpiry.getTimeRemaining('testKey')).toBe(0);
     });
   });
@@ -169,7 +173,7 @@ describe('LocalStorageExpiry', () => {
     it('should allow creating a new instance', () => {
       const lse = new LSEClass();
       lse.set('instanceKey', 'instanceValue');
-      
+
       expect(lse.get('instanceKey')).toBe('instanceValue');
     });
   });
