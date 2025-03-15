@@ -1,7 +1,7 @@
 {
   "name": "localstorage-expiry",
   "version": "2.0.0",
-  "description": "A utility for storing data in localStorage with expiration",
+  "description": "A Typescript utility for storing data in localStorage with expiration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
