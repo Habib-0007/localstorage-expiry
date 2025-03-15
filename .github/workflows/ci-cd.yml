@@ -1,3 +1,9 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -32,14 +38,11 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - name: Set Git user identity
-        run: |
-          git config --global user.name "Habib-0007"
-          git config --global user.email "adebayohabib7@gmail.com"
-
       - name: Bump version and push tag
         run: |
           npm version patch -m "🔖 Release %s - auto-bumped by CI/CD"
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
           git push origin main --follow-tags
 
       - name: Create GitHub Release
@@ -51,7 +54,7 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
     needs: release
