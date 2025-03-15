@@ -54,11 +54,15 @@ jobs:
           npm version patch -m "🔖 Release %s - auto-bumped by CI/CD"
           git push origin main --follow-tags
 
+      - name: Get version
+        id: get_version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v$(node -p "require('./package.json').version")
-          name: Release v$(node -p "require('./package.json').version")
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: Release v${{ steps.get_version.outputs.version }}
           body: "### 🚀 Changes in this release\n\n- Auto-generated release by CI/CD"
           draft: false
           prerelease: false
