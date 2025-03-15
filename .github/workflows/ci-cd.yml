@@ -13,6 +13,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -27,9 +29,13 @@ jobs:
   release:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -38,18 +44,21 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Bump version and push tag
         run: |
           npm version patch -m "🔖 Release %s - auto-bumped by CI/CD"
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
           git push origin main --follow-tags
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          tag_name: v$(node -p "require('./package.json').version")
+          name: Release v$(node -p "require('./package.json').version")
           body: "### 🚀 Changes in this release\n\n- Auto-generated release by CI/CD"
           draft: false
           prerelease: false
@@ -62,6 +71,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: main
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
